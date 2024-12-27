@@ -14,12 +14,19 @@ function App() {
         const localJugador = localStorage.getItem("Jugador");
         return localJugador ? localJugador : "X";
     });
-    const [ganador, setGanador] = useState(false);
+    const [ganador, setGanador] = useState(() => {
+        const localGanador = localStorage.getItem("Ganador");
+        if (localGanador === "X" || localGanador === "O" || localGanador === "Empate") {
+            return localGanador;
+        }
+        return false;
+    });
 
     useEffect(() => {
         localStorage.setItem("Tablero", JSON.stringify(tablero));
         localStorage.setItem("Jugador", jugador);
-    }, [jugador, tablero]);
+        localStorage.setItem("Ganador", ganador);
+    }, [jugador, tablero, ganador]);
     const winningCombinations = [
         [0, 1, 2],
         [3, 4, 5],
@@ -72,15 +79,15 @@ function App() {
         <main>
             <div className="text-center h-screen flex flex-col justify-center bg-slate-400">
                 <h1 className="text-5xl font-bold ">Tic Tac Toe</h1>
-                {ganador && (
-                    <h1 className="text-2xl mt-4">
-                        <span className="font-bold ">
+                <h1 className="text-2xl mt-4 h-10">
+                    {ganador && (
+                        <span className="font-bold text-red-500">
                             {ganador === "Empate"
-                                ? `Quedo en un empate`
+                                ? `Empataron`
                                 : `Ganó ${ganador}`}
                         </span>
-                    </h1>
-                )}
+                    )}
+                </h1>
                 <section className="grid grid-cols-3  mx-auto gap-2 mt-5 select-none">
                     {tablero.map((cell, index) => {
                         return (
